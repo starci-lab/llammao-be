@@ -106,3 +106,32 @@ export interface CreateTokenResponse {
     steps: Array<Step>;
     metadata: Metadata;
   }
+
+export enum NFTProtocol {
+    ERC1155 = "ERC1155",
+    ERC721 = "ERC721",
+  }
+  
+export enum NFTKind {
+    PUBLIC = "public",
+    PRIVATE = "private",
+  }
+  
+export class Wallet {
+    address: string
+    chain: string
+}
+  
+export class MintNFTRequest {
+    chain: string
+    collectionId: string
+    wallet: Wallet
+    nftAmount: number
+    kind: NFTKind
+    protocol: NFTProtocol
+    tokenId: number
+}
+
+export interface MintNFTResponse {
+  steps: Array<Step>;
+}

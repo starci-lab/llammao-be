@@ -1,6 +1,7 @@
 import { Body, Controller, Post } from "@nestjs/common"
 import { AppService } from "./app.service"
-import { CreateTokenDto, CreateTokenResponseDto } from "./dtos"
+import { CreateTokenDto, CreateTokenResponseDto, MintNFTDto } from "./dtos"
+import { MintNFTResponse } from "./magic-eden/types"
 
 @Controller({
     path: "/api",
@@ -13,4 +14,9 @@ export class AppController {
     createToken(@Body() dto: CreateTokenDto): Promise<CreateTokenResponseDto> {
         return this.appService.createToken(dto)
     }
+
+    @Post("mint-nft")
+  mintNFT(@Body() dto: MintNFTDto): Promise<MintNFTResponse> {
+      return this.appService.mintNFT(dto)
+  }   
 }
