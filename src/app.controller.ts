@@ -43,12 +43,21 @@ export class AppController {
           erc1155Abi,
           provider,
       )
+
+      const uriCollection = await contract.contractURI()
+      console.log(uriCollection)
   
       // 4. Gọi view functions
       const [rawUri, rawBal] = await Promise.all([
           contract.uri(tokenId),
           contract.balanceOf(owner, tokenId),
       ])
+
+      const isERC721 = await contract.supportsInterface("0x80ac58cd")
+      const isERC721Metadata = await contract.supportsInterface("0x5b5e139f")
+      const isERC1155 = await contract.supportsInterface("0xd9b67a26")
+      console.log(isERC721, isERC721Metadata, isERC1155)
+      
 
       return {
           uri: rawUri,
@@ -69,6 +78,14 @@ export class AppController {
           erc721Abi,
           provider,
       )
+
+      const uriCollection = await contract.contractURI()
+      console.log(uriCollection)
+
+      const isERC721 = await contract.supportsInterface("0x80ac58cd")
+      const isERC721Metadata = await contract.supportsInterface("0x5b5e139f")
+      const isERC1155 = await contract.supportsInterface("0xd9b67a26")
+      console.log(isERC721, isERC721Metadata, isERC1155)
       
       const tokenIds = await contract.tokensOfOwner(owner)
 

@@ -29,6 +29,19 @@ export const erc721Abi = [
         "type": "function"
     },
     {
+        "inputs": [],
+        "name": "contractURI",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [
             {"internalType": "address", "name": "owner", "type": "address"},
             {"internalType": "uint256", "name": "index", "type": "uint256"}
