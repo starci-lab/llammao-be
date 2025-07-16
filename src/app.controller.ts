@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from "@nestjs/common"
 import { AppService } from "./app.service"
-import { CreateTokenDto, CreateTokenResponseDto, MintNFTDto } from "./dtos"
+import { CreateTokenDto, CreateTokenResponseDto, MintNFTDto, RequestMessageResponseDto, VerifyMessageRequest, VerifyMessageResponse } from "./dtos"
 import { MintNFTResponse } from "./magic-eden/types"
 import { ethers } from "ethers"
 import { erc1155Abi } from "./1155-abi"
@@ -101,6 +101,16 @@ export class AppController {
       return {
           tokens,
       }
+  }
+
+  @Post("/request-message")
+  async requestMessage(): Promise<RequestMessageResponseDto> {
+      return this.appService.requestMessage()
+  }
+
+  @Post("/verify-message")
+  async verifyMessage(@Body() dto: VerifyMessageRequest): Promise<VerifyMessageResponse> {
+      return this.appService.verifyMessage(dto)
   }
 }
 
