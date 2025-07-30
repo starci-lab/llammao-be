@@ -86,7 +86,7 @@ export class AppService {
             if (!user) {
                 await this.userModel.create({ userAddress: address })
             }
-            return { success: true, token: this.jwtService.sign({ address }) }
+            return { success: true, token: this.jwtService.sign({ userAddress: address }) }
         } catch (error) {
             this.logger.error(error.message)
             throw new BadRequestException(JSON.stringify(error))
@@ -98,22 +98,54 @@ export class AppService {
     }
 
     async updateFollowX(address: string): Promise<UpdateFollowXResponseDto> {
-        await this.userModel.updateOne({ userAddress: address }, { $set: { followX: true } })
+        const user = await this.userModel.findOne({ userAddress: address })
+        if (!user) {
+            throw new BadRequestException("User not found")
+        }
+        if (user.followX) {
+            throw new BadRequestException("User already followed X")
+        }
+        user.followX = true 
+        await user.save()
         return { success: true }
     }
 
     async updateJoinDiscord(address: string): Promise<UpdateJoinDiscordResponseDto> {
-        await this.userModel.updateOne({ userAddress: address }, { $set: { joinDiscord: true } })
+        const user = await this.userModel.findOne({ userAddress: address })
+        if (!user) {
+            throw new BadRequestException("User not found")
+        }
+        if (user.joinDiscord) {
+            throw new BadRequestException("User already joined Discord")
+        }
+        user.joinDiscord = true 
+        await user.save()
         return { success: true }
     }
 
     async updateLikeXPost(address: string): Promise<UpdateLikeXResponseDto> {
-        await this.userModel.updateOne({ userAddress: address }, { $set: { likeXPost: true } })
+        const user = await this.userModel.findOne({ userAddress: address })
+        if (!user) {
+            throw new BadRequestException("User not found")
+        }
+        if (user.likeXPost) {
+            throw new BadRequestException("User already liked X post")
+        }
+        user.likeXPost = true 
+        await user.save()
         return { success: true }
     }
 
     async updateCommentXPost(address: string): Promise<UpdateCommentXResponseDto> {
-        await this.userModel.updateOne({ userAddress: address }, { $set: { commentXPost: true } })
+        const user = await this.userModel.findOne({ userAddress: address })
+        if (!user) {
+            throw new BadRequestException("User not found")
+        }
+        if (user.commentXPost) {
+            throw new BadRequestException("User already commented X post")
+        }
+        user.commentXPost = true 
+        await user.save()
         return { success: true }
     }
 }
