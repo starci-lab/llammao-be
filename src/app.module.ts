@@ -7,6 +7,9 @@ import { ConfigModule } from "@nestjs/config"
 import { CacheModule } from "@nestjs/cache-manager"
 import { MongooseModule } from "@nestjs/mongoose"
 import { UserSchema, UserSchemaClass } from "./mongoose"
+import { JwtModule } from "@nestjs/jwt"
+import { PassportModule } from "@nestjs/passport"
+import { JwtStrategy } from "./jwt.strategy"
 
 @Module({
     imports: [
@@ -25,14 +28,20 @@ import { UserSchema, UserSchemaClass } from "./mongoose"
             process.env.MONGO_URI ||
         "mongodb+srv://starci:Cuong123_A@cluster0.wfyt0ii.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
         ),
+        JwtModule.register({
+            global: true,
+            secret: process.env.JWT_SECRET || "cuong123_A",
+            signOptions: { expiresIn: "1d" },
+        }),
+        PassportModule,
         MongooseModule.forFeature([
             {
                 name: UserSchema.name,
-                schema: UserSchemaClass
-            }
-        ])
+                schema: UserSchemaClass,
+            },
+        ]),
     ],
     controllers: [AppController],
-    providers: [AppService],
+    providers: [AppService, JwtStrategy],
 })
 export class AppModule {}

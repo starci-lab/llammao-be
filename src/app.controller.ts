@@ -1,10 +1,31 @@
-import { Body, Controller, Post } from "@nestjs/common"
+import {
+    Body,
+    Controller,
+    Get,
+    NotFoundException,
+    Param,
+    Post,
+    UseGuards,
+} from "@nestjs/common"
 import { AppService } from "./app.service"
-import { CreateTokenDto, CreateTokenResponseDto, MintNFTDto, RequestMessageResponseDto, VerifyMessageRequest, VerifyMessageResponse } from "./dtos"
+import {
+    CreateTokenDto,
+    CreateTokenResponseDto,
+    MintNFTDto,
+    RequestMessageResponseDto,
+    UpdateCommentXResponseDto,
+    UpdateFollowXResponseDto,
+    UpdateJoinDiscordResponseDto,
+    UpdateLikeXResponseDto,
+    VerifyMessageRequest,
+    VerifyMessageResponse,
+} from "./dtos"
 import { MintNFTResponse } from "./magic-eden/types"
 import { ethers } from "ethers"
 import { erc1155Abi } from "./1155-abi"
 import { erc721Abi } from "./721-abi"
+import { UserSchema } from "./mongoose"
+import { JwtAuthGuard, User } from "./jwt.strategy"
 
 @Controller({
     path: "/api",
@@ -12,13 +33,15 @@ import { erc721Abi } from "./721-abi"
 })
 export class AppController {
     constructor(
-      private readonly appService: AppService,
-        // @InjectModel(NFTSchema.name) private nftModel: Model<NFTSchema>,
-        // @InjectModel(UserSchema.name) private userModel: Model<UserSchema>,
+    private readonly appService: AppService,
+    // @InjectModel(NFTSchema.name) private nftModel: Model<NFTSchema>,
+    // @InjectModel(UserSchema.name) private userModel: Model<UserSchema>,
     ) {}
 
   @Post("create-token")
-    async createToken(@Body() dto: CreateTokenDto): Promise<CreateTokenResponseDto> {
+    async createToken(
+    @Body() dto: CreateTokenDto,
+    ): Promise<CreateTokenResponseDto> {
         return this.appService.createToken(dto)
     }
 
@@ -29,13 +52,15 @@ export class AppController {
   }
 
   @Post("test-1155")
-  async test1155(@Body() dto: Test1155RequestDto): Promise<Test1155ResponseDto> {
+  async test1155(
+    @Body() dto: Test1155RequestDto,
+  ): Promise<Test1155ResponseDto> {
       const tokenId = dto?.tokenId || 0
       const owner = dto?.owner || "0x80C34fC701De7caF7036Db13011DC843Aa76d73c"
       const provider = new ethers.JsonRpcProvider(
-          "https://testnet-rpc.monad.xyz", 
-          10143                            
-      )                                                
+          "https://testnet-rpc.monad.xyz",
+          10143,
+      )
 
       // 3. Khởi tạo contract
       const contract = new ethers.Contract(
@@ -46,7 +71,7 @@ export class AppController {
 
       const uriCollection = await contract.contractURI()
       console.log(uriCollection)
-  
+
       // 4. Gọi view functions
       const [rawUri, rawBal] = await Promise.all([
           contract.uri(tokenId),
@@ -57,7 +82,6 @@ export class AppController {
       const isERC721Metadata = await contract.supportsInterface("0x5b5e139f")
       const isERC1155 = await contract.supportsInterface("0xd9b67a26")
       console.log(isERC721, isERC721Metadata, isERC1155)
-      
 
       return {
           uri: rawUri,
@@ -69,9 +93,9 @@ export class AppController {
   async test721(@Body() dto: Test721RequestDto): Promise<Test721ResponseDto> {
       const owner = dto?.owner || "0xA7C1d79C7848c019bCb669f1649459bE9d076DA3"
       const provider = new ethers.JsonRpcProvider(
-          "https://testnet-rpc.monad.xyz", 
-          10143                            
-      )   
+          "https://testnet-rpc.monad.xyz",
+          10143,
+      )
 
       const contract = new ethers.Contract(
           "0x06D235F0D8ff77c499A6F647a4d44636acf8584A", // địa chỉ đã cho
@@ -86,17 +110,19 @@ export class AppController {
       const isERC721Metadata = await contract.supportsInterface("0x5b5e139f")
       const isERC1155 = await contract.supportsInterface("0xd9b67a26")
       console.log(isERC721, isERC721Metadata, isERC1155)
-      
+
       const tokenIds = await contract.tokensOfOwner(owner)
 
       const tokens: Array<any> = []
-      await Promise.all(tokenIds.map(async (tokenId: number) => {
-          const uri = await contract.tokenURI(tokenId)
-          tokens.push({
-              tokenId: Number(tokenId),
-              uri,
-          })
-      }))
+      await Promise.all(
+          tokenIds.map(async (tokenId: number) => {
+              const uri = await contract.tokenURI(tokenId)
+              tokens.push({
+                  tokenId: Number(tokenId),
+                  uri,
+              })
+          }),
+      )
 
       return {
           tokens,
@@ -109,18 +135,61 @@ export class AppController {
   }
 
   @Post("/verify-message")
-  async verifyMessage(@Body() dto: VerifyMessageRequest): Promise<VerifyMessageResponse> {
+  async verifyMessage(
+    @Body() dto: VerifyMessageRequest,
+  ): Promise<VerifyMessageResponse> {
       return this.appService.verifyMessage(dto)
+  }
+
+  @Get("/user/:id")
+  async getUser(@Param("id") id: string): Promise<UserSchema> {
+      const user = await this.appService.getUser(id)
+      if (!user) {
+          throw new NotFoundException("User not found")
+      }
+      return user
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post("/update-follow-x")
+  async updateFollowX(
+    @User() user: { userAddress: string },
+  ): Promise<UpdateFollowXResponseDto> {
+      return this.appService.updateFollowX(user.userAddress)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post("/update-join-discord")
+  async updateJoinDiscord(
+    @User() user: { userAddress: string },
+  ): Promise<UpdateJoinDiscordResponseDto> {
+      return this.appService.updateJoinDiscord(user.userAddress)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post("/update-like-x-post")
+  async updateLikeXPost(
+    @User() user: { userAddress: string },
+  ): Promise<UpdateLikeXResponseDto> {
+      return this.appService.updateLikeXPost(user.userAddress)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post("/update-comment-x-post")
+  async updateCommentXPost(
+    @User() user: { userAddress: string },
+  ): Promise<UpdateCommentXResponseDto> {
+      return this.appService.updateCommentXPost(user.userAddress)
   }
 }
 
 export interface Test1155RequestDto {
-  owner: string;      // ví muốn kiểm tra
-  tokenId: number;    // id của NFT
+  owner: string; // ví muốn kiểm tra
+  tokenId: number; // id của NFT
 }
 
 export interface Test1155ResponseDto {
-  balance?: string;   // sẽ được điền thêm
+  balance?: string; // sẽ được điền thêm
   uri?: string;
 }
 

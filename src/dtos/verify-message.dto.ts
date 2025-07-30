@@ -15,4 +15,8 @@ export class VerifyMessageResponse {
     @ApiProperty({ example: true })
     @IsString()
         success: boolean
+
+    @ApiProperty({ example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." })
+    @IsString()
+        token: string
 }

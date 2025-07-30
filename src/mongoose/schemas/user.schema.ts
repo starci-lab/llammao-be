@@ -10,6 +10,26 @@ export class UserSchema {
         unique: true
     })
         userAddress: string
+
+    @Prop({
+        default: false
+    })
+        followX: boolean
+
+    @Prop({
+        default: false
+    })
+        joinDiscord: boolean
+    
+    @Prop({
+        default: false
+    })
+        likeXPost: boolean
+
+    @Prop({
+        default: false
+    })
+        commentXPost: boolean
 }
 
 export const UserSchemaClass = SchemaFactory.createForClass(UserSchema)

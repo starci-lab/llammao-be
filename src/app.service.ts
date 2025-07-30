@@ -11,6 +11,10 @@ import {
     MintNFTDto,
     MintNFTResponseDto,
     RequestMessageResponseDto,
+    UpdateCommentXResponseDto,
+    UpdateFollowXResponseDto,
+    UpdateJoinDiscordResponseDto,
+    UpdateLikeXResponseDto,
     VerifyMessageRequest,
     VerifyMessageResponse,
 } from "./dtos"
@@ -21,6 +25,7 @@ import { verifyMessage } from "ethers"
 import { InjectModel } from "@nestjs/mongoose"
 import { UserSchema } from "./mongoose"
 import { Model } from "mongoose"
+import { JwtService } from "@nestjs/jwt"
 
 @Injectable()
 export class AppService {
@@ -30,6 +35,7 @@ export class AppService {
     private readonly cacheManager: Cache,
     @InjectModel(UserSchema.name)
     private readonly userModel: Model<UserSchema>,
+    private readonly jwtService: JwtService,
     ) {}
     private readonly logger = new Logger(AppService.name)
 
@@ -80,10 +86,34 @@ export class AppService {
             if (!user) {
                 await this.userModel.create({ userAddress: address })
             }
-            return { success: true }
+            return { success: true, token: this.jwtService.sign({ address }) }
         } catch (error) {
             this.logger.error(error.message)
             throw new BadRequestException(JSON.stringify(error))
         }
+    }
+
+    async getUser(address: string): Promise<UserSchema | null> {
+        return await this.userModel.findOne({ userAddress: address })
+    }
+
+    async updateFollowX(address: string): Promise<UpdateFollowXResponseDto> {
+        await this.userModel.updateOne({ userAddress: address }, { $set: { followX: true } })
+        return { success: true }
+    }
+
+    async updateJoinDiscord(address: string): Promise<UpdateJoinDiscordResponseDto> {
+        await this.userModel.updateOne({ userAddress: address }, { $set: { joinDiscord: true } })
+        return { success: true }
+    }
+
+    async updateLikeXPost(address: string): Promise<UpdateLikeXResponseDto> {
+        await this.userModel.updateOne({ userAddress: address }, { $set: { likeXPost: true } })
+        return { success: true }
+    }
+
+    async updateCommentXPost(address: string): Promise<UpdateCommentXResponseDto> {
+        await this.userModel.updateOne({ userAddress: address }, { $set: { commentXPost: true } })
+        return { success: true }
     }
 }
