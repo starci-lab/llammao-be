@@ -21,7 +21,7 @@ import {
 import { Cache } from "cache-manager"
 import { CACHE_MANAGER } from "@nestjs/cache-manager"
 import { randomUUID } from "crypto"
-import { verifyMessage } from "ethers"
+import { getAddress, verifyMessage } from "ethers"
 import { InjectModel } from "@nestjs/mongoose"
 import { UserSchema } from "./mongoose"
 import { Model } from "mongoose"
@@ -82,11 +82,13 @@ export class AppService {
                 throw new BadRequestException("Invalid signature")
             }
             // process db logic
-            const user = await this.userModel.findOne({ userAddress: address })
+            // ensure the compability, we will checksum the address
+            const checksumAddress = getAddress(address)
+            const user = await this.userModel.findOne({ userAddress: checksumAddress })
             if (!user) {
-                await this.userModel.create({ userAddress: address })
+                await this.userModel.create({ userAddress: checksumAddress })
             }
-            return { success: true, token: this.jwtService.sign({ userAddress: address }) }
+            return { success: true, token: this.jwtService.sign({ userAddress: checksumAddress }) }
         } catch (error) {
             this.logger.error(error.message)
             throw new BadRequestException(JSON.stringify(error))
