@@ -26,7 +26,7 @@ import { JwtStrategy } from "./jwt.strategy"
         CacheModule.register(),
         MongooseModule.forRoot(
             process.env.MONGO_URI ||
-        "mongodb://root:S0l%40na%232025%21Db@172.17.0.2:27017",
+        "mongodb://root:Abcdefghijklmnopqrst @172.17.0.2:27017",
         ),
         JwtModule.register({
             global: true,
