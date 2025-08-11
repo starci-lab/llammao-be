@@ -107,11 +107,13 @@ export class AppService {
     }
 
     async getUser(address: string): Promise<UserSchema | null> {
-        return await this.userModel.findOne({ userAddress: address })
+        const checksumAddress = getAddress(address)
+        return await this.userModel.findOne({ userAddress: checksumAddress })
     }
 
     async updateFollowX(address: string): Promise<UpdateFollowXResponseDto> {
-        const user = await this.userModel.findOne({ userAddress: address })
+        const checksumAddress = getAddress(address)
+        const user = await this.userModel.findOne({ userAddress: checksumAddress })
         if (!user) {
             throw new BadRequestException("User not found")
         }
@@ -126,7 +128,8 @@ export class AppService {
     async updateJoinDiscord(
         address: string,
     ): Promise<UpdateJoinDiscordResponseDto> {
-        const user = await this.userModel.findOne({ userAddress: address })
+        const checksumAddress = getAddress(address)
+        const user = await this.userModel.findOne({ userAddress: checksumAddress })
         if (!user) {
             throw new BadRequestException("User not found")
         }
@@ -139,7 +142,8 @@ export class AppService {
     }
 
     async updateLikeXPost(address: string): Promise<UpdateLikeXResponseDto> {
-        const user = await this.userModel.findOne({ userAddress: address })
+        const checksumAddress = getAddress(address)
+        const user = await this.userModel.findOne({ userAddress: checksumAddress })
         if (!user) {
             throw new BadRequestException("User not found")
         }
@@ -154,7 +158,8 @@ export class AppService {
     async updateCommentXPost(
         address: string,
     ): Promise<UpdateCommentXResponseDto> {
-        const user = await this.userModel.findOne({ userAddress: address })
+        const checksumAddress = getAddress(address)
+        const user = await this.userModel.findOne({ userAddress: checksumAddress })
         if (!user) {
             throw new BadRequestException("User not found")
         }
