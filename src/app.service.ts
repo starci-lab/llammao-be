@@ -84,11 +84,22 @@ export class AppService {
             // process db logic
             // ensure the compability, we will checksum the address
             const checksumAddress = getAddress(address)
-            const user = await this.userModel.findOne({ userAddress: checksumAddress })
+            const user = await this.userModel.findOne({
+                userAddress: checksumAddress,
+            })
             if (!user) {
-                await this.userModel.create({ userAddress: checksumAddress })
+                await this.userModel.create({
+                    userAddress: checksumAddress,
+                    joinDiscord: false,
+                    followX: false,
+                    likeXPost: false,
+                    commentXPost: false,
+                })
             }
-            return { success: true, token: this.jwtService.sign({ userAddress: checksumAddress }) }
+            return {
+                success: true,
+                token: this.jwtService.sign({ userAddress: checksumAddress }),
+            }
         } catch (error) {
             this.logger.error(error.message)
             throw new BadRequestException(JSON.stringify(error))
@@ -107,12 +118,14 @@ export class AppService {
         if (user.followX) {
             throw new BadRequestException("User already followed X")
         }
-        user.followX = true 
+        user.followX = true
         await user.save()
         return { success: true }
     }
 
-    async updateJoinDiscord(address: string): Promise<UpdateJoinDiscordResponseDto> {
+    async updateJoinDiscord(
+        address: string,
+    ): Promise<UpdateJoinDiscordResponseDto> {
         const user = await this.userModel.findOne({ userAddress: address })
         if (!user) {
             throw new BadRequestException("User not found")
@@ -120,7 +133,7 @@ export class AppService {
         if (user.joinDiscord) {
             throw new BadRequestException("User already joined Discord")
         }
-        user.joinDiscord = true 
+        user.joinDiscord = true
         await user.save()
         return { success: true }
     }
@@ -133,12 +146,14 @@ export class AppService {
         if (user.likeXPost) {
             throw new BadRequestException("User already liked X post")
         }
-        user.likeXPost = true 
+        user.likeXPost = true
         await user.save()
         return { success: true }
     }
 
-    async updateCommentXPost(address: string): Promise<UpdateCommentXResponseDto> {
+    async updateCommentXPost(
+        address: string,
+    ): Promise<UpdateCommentXResponseDto> {
         const user = await this.userModel.findOne({ userAddress: address })
         if (!user) {
             throw new BadRequestException("User not found")
@@ -146,7 +161,7 @@ export class AppService {
         if (user.commentXPost) {
             throw new BadRequestException("User already commented X post")
         }
-        user.commentXPost = true 
+        user.commentXPost = true
         await user.save()
         return { success: true }
     }
