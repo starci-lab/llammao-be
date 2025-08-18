@@ -181,6 +181,11 @@ export class AppController {
   ): Promise<UpdateCommentXResponseDto> {
       return this.appService.updateCommentXPost(user.userAddress)
   }
+
+  @Get("/users")
+  async users(): Promise<UserSchema[]> {
+      return this.appService.getUsers()
+  }
 }
 
 export interface Test1155RequestDto {

@@ -155,6 +155,10 @@ export class AppService {
         return { success: true }
     }
 
+    async getUsers(): Promise<UserSchema[]> {
+        return await this.userModel.find()
+    }
+
     async updateCommentXPost(
         address: string,
     ): Promise<UpdateCommentXResponseDto> {
