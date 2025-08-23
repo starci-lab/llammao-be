@@ -34,7 +34,8 @@ export class UserSchema {
 
     @Prop({
         required: false,
-        type: MongooseSchema.Types.Mixed
+        default: {},
+        type: MongooseSchema.Types.ObjectId
     })
         season2: object
 
