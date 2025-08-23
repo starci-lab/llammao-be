@@ -10,6 +10,8 @@ import { UserSchema, UserSchemaClass } from "./mongoose"
 import { JwtModule } from "@nestjs/jwt"
 import { PassportModule } from "@nestjs/passport"
 import { JwtStrategy } from "./jwt.strategy"
+import { ScheduleModule } from "@nestjs/schedule"
+import { AppCronService } from "./app.cron"
 
 @Module({
     imports: [
@@ -33,6 +35,7 @@ import { JwtStrategy } from "./jwt.strategy"
             secret: process.env.JWT_SECRET || "cuong123_A",
             signOptions: { expiresIn: "1d" },
         }),
+        ScheduleModule.forRoot(),
         PassportModule,
         MongooseModule.forFeature([
             {
@@ -42,6 +45,6 @@ import { JwtStrategy } from "./jwt.strategy"
         ]),
     ],
     controllers: [AppController],
-    providers: [AppService, JwtStrategy],
+    providers: [AppService, JwtStrategy, AppCronService],
 })
 export class AppModule {}

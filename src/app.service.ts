@@ -69,6 +69,21 @@ export class AppService {
         }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async updateSeason2(address: string, data: any) {
+        const checksumAddress = getAddress(address)
+        const user = await this.userModel.findOne({ userAddress: checksumAddress })
+        if (!user) {
+            throw new BadRequestException("User not found")
+        }
+        user.season2 = {
+            ...user.season2,
+            ...data,
+        }
+        await user.save()
+        return { success: true }
+    }
+
     async verifyMessage(
         dto: VerifyMessageRequest,
     ): Promise<VerifyMessageResponse> {

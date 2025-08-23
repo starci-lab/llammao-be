@@ -44,6 +44,8 @@ export class AppController {
     ): Promise<CreateTokenResponseDto> {
         return this.appService.createToken(dto)
     }
+    
+
 
   @Post("mint-nft")
   async mintNFT(@Body() dto: MintNFTDto): Promise<MintNFTResponse> {
@@ -156,6 +158,16 @@ export class AppController {
     @User() user: { userAddress: string },
   ): Promise<UpdateFollowXResponseDto> {
       return this.appService.updateFollowX(user.userAddress)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post("/update-season2")
+  async updateSeason2(
+    @User() user: { userAddress: string },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    @Body() dto: any,
+  ) {
+      return this.appService.updateSeason2(user.userAddress, dto)
   }
 
   @UseGuards(JwtAuthGuard)

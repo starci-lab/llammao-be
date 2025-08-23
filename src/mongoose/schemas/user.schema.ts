@@ -30,6 +30,16 @@ export class UserSchema {
         default: false
     })
         commentXPost: boolean
+
+    @Prop({
+        required: false
+    })
+        season2: object
+
+    @Prop({
+        unique: false
+    })
+        nftOwned?: "minted" | "not_minted"
 }
 
 export const UserSchemaClass = SchemaFactory.createForClass(UserSchema)
