@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
+import { Schema as MongooseSchema } from "mongoose"
 
 @Schema({
     timestamps: true,
@@ -32,7 +33,8 @@ export class UserSchema {
         commentXPost: boolean
 
     @Prop({
-        required: false
+        required: false,
+        type: MongooseSchema.Types.Mixed
     })
         season2: object
 
