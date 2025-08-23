@@ -35,9 +35,9 @@ export class UserSchema {
     @Prop({
         required: false,
         default: {},
-        type: MongooseSchema.Types.ObjectId
+        type: MongooseSchema.Types.Mixed
     })
-        season2: object
+        season2: Record<string, string>
 
     @Prop({
         unique: false
