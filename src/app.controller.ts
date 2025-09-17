@@ -26,6 +26,7 @@ import { erc1155Abi } from "./1155-abi"
 import { erc721Abi } from "./721-abi"
 import { UserSchema } from "./mongoose"
 import { JwtAuthGuard, User } from "./jwt.strategy"
+import { Throttle } from "@nestjs/throttler"
 
 @Controller({
     path: "/api",
@@ -38,6 +39,7 @@ export class AppController {
     // @InjectModel(UserSchema.name) private userModel: Model<UserSchema>,
     ) {}
 
+  @Throttle({ default: { limit: 3, ttl: 60 } })
   @Post("create-token")
     async createToken(
     @Body() dto: CreateTokenDto,
@@ -45,8 +47,7 @@ export class AppController {
         return this.appService.createToken(dto)
     }
     
-
-
+  @Throttle({ default: { limit: 3, ttl: 60 } })
   @Post("mint-nft")
   async mintNFT(@Body() dto: MintNFTDto): Promise<MintNFTResponse> {
       // create nft
@@ -130,12 +131,14 @@ export class AppController {
           tokens,
       }
   }
-
+  
+  @Throttle({ default: { limit: 3, ttl: 60 } })
   @Post("/request-message")
   async requestMessage(): Promise<RequestMessageResponseDto> {
       return this.appService.requestMessage()
   }
 
+  @Throttle({ default: { limit: 3, ttl: 60 } })
   @Post("/verify-message")
   async verifyMessage(
     @Body() dto: VerifyMessageRequest,
@@ -143,6 +146,7 @@ export class AppController {
       return this.appService.verifyMessage(dto)
   }
 
+  @Throttle({ default: { limit: 3, ttl: 60 } })
   @Get("/user/:id")
   async getUser(@Param("id") id: string): Promise<UserSchema> {
       const user = await this.appService.getUser(id)
@@ -152,6 +156,7 @@ export class AppController {
       return user
   }
 
+  @Throttle({ default: { limit: 3, ttl: 60 } })
   @UseGuards(JwtAuthGuard)
   @Post("/update-follow-x")
   async updateFollowX(
@@ -160,6 +165,7 @@ export class AppController {
       return this.appService.updateFollowX(user.userAddress)
   }
 
+  @Throttle({ default: { limit: 3, ttl: 60 } })
   @UseGuards(JwtAuthGuard)
   @Post("/update-season2")
   async updateSeason2(
@@ -170,6 +176,7 @@ export class AppController {
       return this.appService.updateSeason2(user.userAddress, dto)
   }
 
+  @Throttle({ default: { limit: 3, ttl: 60 } })
   @UseGuards(JwtAuthGuard)
   @Post("/update-join-discord")
   async updateJoinDiscord(
@@ -178,6 +185,7 @@ export class AppController {
       return this.appService.updateJoinDiscord(user.userAddress)
   }
 
+  @Throttle({ default: { limit: 3, ttl: 60 } })
   @UseGuards(JwtAuthGuard)
   @Post("/update-like-x-post")
   async updateLikeXPost(
@@ -186,6 +194,7 @@ export class AppController {
       return this.appService.updateLikeXPost(user.userAddress)
   }
 
+  @Throttle({ default: { limit: 3, ttl: 60 } })
   @UseGuards(JwtAuthGuard)
   @Post("/update-comment-x-post")
   async updateCommentXPost(
@@ -194,6 +203,7 @@ export class AppController {
       return this.appService.updateCommentXPost(user.userAddress)
   }
 
+  @Throttle({ default: { limit: 20  , ttl: 60 } })
   @Get("/users")
   async users(): Promise<UserSchema[]> {
       return this.appService.getUsers()

@@ -12,6 +12,7 @@ import { PassportModule } from "@nestjs/passport"
 import { JwtStrategy } from "./jwt.strategy"
 import { ScheduleModule } from "@nestjs/schedule"
 import { AppCronService } from "./app.cron"
+import { ThrottlerModule } from "@nestjs/throttler"
 
 @Module({
     imports: [
@@ -35,6 +36,7 @@ import { AppCronService } from "./app.cron"
             secret: process.env.JWT_SECRET || "cuong123_A",
             signOptions: { expiresIn: "1d" },
         }),
+        ThrottlerModule.forRoot(),
         ScheduleModule.forRoot(),
         PassportModule,
         MongooseModule.forFeature([
