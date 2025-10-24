@@ -123,7 +123,11 @@ export class AppService {
 
     async getUser(address: string): Promise<UserSchema | null> {
         const checksumAddress = getAddress(address)
-        return await this.userModel.findOne({ userAddress: checksumAddress })
+        const user = await this.userModel.findOne({ userAddress: checksumAddress })
+        if (!user) {
+            return null
+        }
+        return user.toJSON()
     }
 
     async updateFollowX(address: string): Promise<UpdateFollowXResponseDto> {

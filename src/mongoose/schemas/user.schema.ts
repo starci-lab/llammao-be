@@ -1,5 +1,44 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
 import { Schema as MongooseSchema } from "mongoose"
+import { IsBoolean } from "class-validator"
+
+export class WinnerDto {
+    @IsBoolean()
+        winLlamaoAwakening: boolean
+  
+    @IsBoolean()
+        winLlamaoGTD: boolean
+  
+    @IsBoolean()
+        winMonadverseFCFS: boolean
+  
+    @IsBoolean()
+        winMonadverseGTD: boolean
+  
+    @IsBoolean()
+        winNadNameServiceGTD: boolean
+  
+    @IsBoolean()
+        winOvernadsGTD: boolean
+  
+    @IsBoolean()
+        winOvernadsFCFS: boolean
+  
+    @IsBoolean()
+        winChewyFCFS: boolean
+  
+    @IsBoolean()
+        winChewyGTD: boolean
+  
+    @IsBoolean()
+        winSLMNDFCFS: boolean
+  
+    @IsBoolean()
+        winLaMouchGTD: boolean
+  
+    @IsBoolean()
+        win$CHOGtoken: boolean
+}
 
 @Schema({
     timestamps: true,
@@ -43,6 +82,8 @@ export class UserSchema {
         unique: false
     })
         nftOwned?: "minted" | "not_minted"
+
+    winner: WinnerDto
 }
 
 export const UserSchemaClass = SchemaFactory.createForClass(UserSchema)

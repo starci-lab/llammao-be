@@ -90,3 +90,4 @@ export class CreateTokenDto {
   @IsString()
       imageUrl: string
 }
+

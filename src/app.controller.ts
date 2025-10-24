@@ -27,7 +27,10 @@ import { erc721Abi } from "./721-abi"
 import { UserSchema } from "./mongoose"
 import { JwtAuthGuard, User } from "./jwt.strategy"
 import { Throttle } from "@nestjs/throttler"
-
+import { readFileSync } from "fs"
+import { join } from "path"
+import { parse } from "csv-parse/sync"
+console.log(join)
 @Controller({
     path: "/api",
     version: "1",
@@ -148,11 +151,143 @@ export class AppController {
 
   @Throttle({ default: { limit: 3, ttl: 60 } })
   @Get("/user/:id")
-  async getUser(@Param("id") id: string): Promise<UserSchema> {
-      const user = await this.appService.getUser(id)
-      if (!user) {
-          throw new NotFoundException("User not found")
+  async getUser(@Param("id") id: string) {
+      const user = {
+          winner: {
+              winLlamaoAwakening: false,
+              winLlamaoGTD: false,
+              winMonadverseFCFS: false,
+              winMonadverseGTD: false,
+              winNadNameServiceGTD: false,
+              winOvernadsGTD: false,
+              winOvernadsFCFS: false,
+              winChewyFCFS: false,
+              winChewyGTD: false,
+              winSLMNDFCFS: false,
+              winLaMouchGTD: false,
+              win$CHOGtoken: false,
+          }
       }
+      const awakeningCsv = readFileSync(join(process.cwd(), "datasets/awakening.csv"), "utf8")
+      const awakeningRecords = parse(awakeningCsv, {
+          columns: true,
+          skip_empty_lines: true,
+      })
+      const awakeningRecord = awakeningRecords.some((record: Array<{ [key: string]: string }>) => 
+      {
+          return record["Wallet Address"].trim().toLowerCase() === id.trim().toLowerCase()
+      }
+      )
+      if (awakeningRecord) {
+          user.winner.winLlamaoAwakening = true
+      }
+      const winningCsv = readFileSync(join(process.cwd(), "datasets/winner.csv"), "utf8")
+      const winningRecords = parse(winningCsv, {
+          columns: true,
+          skip_empty_lines: true,
+      })
+      const winLLamaoGtd = winningRecords.some((record: Array<{ [key: string]: string }>) => 
+      {
+          console.log(record["Wallet Address"].trim().toLowerCase(), id.trim().toLowerCase())
+          console.log(record["Title"].trim().toLowerCase(), "Llamao GTD")
+          return record["Wallet Address"].trim().toLowerCase() === id.trim().toLowerCase()
+          && record["Title"].trim().toLowerCase() === ("Llamao GTD").trim().toLowerCase()
+      }
+      )
+      if (winLLamaoGtd) {
+          user.winner.winLlamaoGTD = true
+      }
+      const winMonadverseFCFS = winningRecords.some((record: Array<{ [key: string]: string }>) => 
+      {
+          return record["Wallet Address"].trim().toLowerCase() === id.trim().toLowerCase()
+          && record["Title"].trim().toLowerCase() === ("Monadverse FCFS").trim().toLowerCase()
+      }
+      )
+      if (winMonadverseFCFS) {
+          user.winner.winMonadverseFCFS = true
+      }
+      const winMonadverseGTD = winningRecords.some((record: Array<{ [key: string]: string }>) => 
+      {
+          return record["Wallet Address"].trim().toLowerCase() === id.trim().toLowerCase()
+          && record["Title"].trim().toLowerCase() === ("Monadverse GTD").trim().toLowerCase()
+      }
+      )
+      if (winMonadverseGTD) {
+          user.winner.winMonadverseGTD = true
+      }
+      const winNadNameServiceGTD = winningRecords.some((record: Array<{ [key: string]: string }>) => 
+      {
+          return record["Wallet Address"].trim().toLowerCase() === id.trim().toLowerCase()
+          && record["Title"].trim().toLowerCase() === ("Nad Name Service GTD").trim().toLowerCase()
+      }
+      )
+      if (winNadNameServiceGTD) {
+          user.winner.winNadNameServiceGTD = true
+      }
+      const winOvernadsGTD = winningRecords.some((record: Array<{ [key: string]: string }>) => 
+      {
+          return record["Wallet Address"].trim().toLowerCase() === id.trim().toLowerCase()
+          && record["Title"].trim().toLowerCase() === ("Overnads GTD").trim().toLowerCase()
+      }
+      )
+      if (winOvernadsGTD) {
+          user.winner.winOvernadsGTD = true
+      }
+      const winOvernadsFCFS = winningRecords.some((record: Array<{ [key: string]: string }>) => 
+      {
+          return record["Wallet Address"].trim().toLowerCase() === id.trim().toLowerCase()
+          && record["Title"].trim().toLowerCase() === ("Overnads FCFS").trim().toLowerCase()
+      }
+      )
+      if (winOvernadsFCFS) {
+          user.winner.winOvernadsFCFS = true
+      }
+      const winChewyFCFS = winningRecords.some((record: Array<{ [key: string]: string }>) => 
+      {
+          return record["Wallet Address"].trim().toLowerCase() === id.trim().toLowerCase()
+          && record["Title"].trim().toLowerCase() === ("Chewy FCFS").trim().toLowerCase()
+      }
+      )
+      if (winChewyFCFS) {
+          user.winner.winChewyFCFS = true
+      }
+      const winChewyGTD = winningRecords.some((record: Array<{ [key: string]: string }>) => 
+      {
+          return record["Wallet Address"].trim().toLowerCase() === id.trim().toLowerCase()
+          && record["Title"].trim().toLowerCase() === ("Chewy GTD").trim().toLowerCase()
+      }
+      )
+      if (winChewyGTD) {
+          user.winner.winChewyGTD = true
+      }
+      const winSLMNDFCFS = winningRecords.some((record: Array<{ [key: string]: string }>) => 
+      {
+          return record["Wallet Address"].trim().toLowerCase() === id.trim().toLowerCase()
+          && record["Title"].trim().toLowerCase() === ("SLMND FCFS").trim().toLowerCase()
+      }
+      )
+      if (winSLMNDFCFS) {
+          user.winner.winSLMNDFCFS = true
+      }
+      const winLaMouchGTD = winningRecords.some((record: Array<{ [key: string]: string }>) => 
+      {
+          return record["Wallet Address"].trim().toLowerCase() === id.trim().toLowerCase()
+          && record["Title"].trim().toLowerCase() === ("La Mouch GTD").trim().toLowerCase()
+      }
+      )
+      if (winLaMouchGTD) {
+          user.winner.winLaMouchGTD = true
+      }
+      const win$CHOGtoken = winningRecords.some((record: Array<{ [key: string]: string }>) => 
+      {
+          return record["Wallet Address"].trim().toLowerCase() === id.trim().toLowerCase()
+          && record["Title"].trim().toLowerCase() === ("$CHOG token").trim().toLowerCase()
+      }
+      )
+      if (win$CHOGtoken) {
+          user.winner.win$CHOGtoken = true
+      }
+      console.log(user)
       return user
   }
 
