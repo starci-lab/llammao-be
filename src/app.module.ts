@@ -29,7 +29,7 @@ import { ThrottlerModule } from "@nestjs/throttler"
         CacheModule.register(),
         MongooseModule.forRoot(
             process.env.MONGO_URI ||
-        "mongodb://root:Abcdefghijklmnopqrst@172.17.0.1:27017/llamao?authSource=admin",
+        "mongodb://root:Cuong123_A@172.17.0.1:27017/llamao?authSource=admin",
         ),
         JwtModule.register({
             global: true,
